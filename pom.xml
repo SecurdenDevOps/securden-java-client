@@ -9,21 +9,21 @@
     <url>https://securden.com</url>
     <description>The official securden SDK for Java</description>
     <scm>
-        <connection>scm:git:git://github.com/securden/java-sdk.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/securden/java-sdk.git</developerConnection>
-        <url>https://github.com/securden/java-sdk/</url>
+        <connection>scm:git:git://github.com/SecurdenDevOps/securden-java-client.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/SecurdenDevOps/securden-java-client.git</developerConnection>
+        <url>https://github.com/SecurdenDevOps/securden-java-client/</url>
     </scm>
 
     <distributionManagement>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+  <snapshotRepository>
+    <id>central</id>
+    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>central</id>
+    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+</distributionManagement>
 
     <licenses>
         <license>
@@ -35,10 +35,10 @@
 
     <developers>
         <developer>
-            <name>securden Devops</name>
-            <email>support@securden.com</email>
+            <name>securden Dev</name>
+            <email>devops-support@securden.com</email>
             <organization>securden.com</organization>
-            <organizationUrl>http://securden.com</organizationUrl>
+            <organizationUrl>https://securden.com</organizationUrl>
         </developer>
     </developers>
 
@@ -54,7 +54,7 @@
                     <maxmem>512m</maxmem>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
-                        <arg>-J-Xss4m</arg><!-- Compiling the generated JSON.java file may require larger stack size. -->
+                        <arg>-J-Xss4m</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
@@ -94,7 +94,6 @@
                     <threadCount>10</threadCount>
                 </configuration>
                 <dependencies>
-                    <!--Custom provider and engine for Junit 5 to surefire-->
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
@@ -241,30 +240,52 @@
                 </java>
               </configuration>
             </plugin>
+
+            <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.7.0</version>
+            <extensions>true</extensions>
+            <configuration>
+                <publishingServerId>central</publishingServerId>
+            </configuration>
+        </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
             <id>sign-artifacts</id>
+            <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
             <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.1</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+                            <keyname>0x540D0DA4</keyname>
+                        </configuration>
+            <executions>
+                <execution>
+                    <id>sign-artifacts</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                    <configuration>
+                        <gpgArguments>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
+                        </gpgArguments>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
         </profile>
     </profiles>
 
